@@ -1,11 +1,10 @@
 mod comps;
 mod entities;
-mod input;
 mod systems;
 
 use comps::temp_comps::Position;
-use entities::temp_entities::Player;
-use systems::renderer;
+use entities::temp_entities::Entity;
+use systems::{input, renderer};
 use tcod::console::{FontLayout, Root};
 
 fn main() {
@@ -13,11 +12,13 @@ fn main() {
     const HEIGHT: i32 = 30;
 
     let mut term = Root::initializer()
+        .title("the fabulous land of Paladin")
         .size(WIDTH, HEIGHT)
         .font("assets/terminal16x16.png", FontLayout::AsciiInRow)
         .init();
 
-    let mut player = Player {
+    //fuck you, compiler
+    let mut player = Entity {
         pos: Position { x: 8, y: 8 },
         glyph: '@',
     };

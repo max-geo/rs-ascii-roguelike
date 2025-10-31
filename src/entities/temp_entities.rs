@@ -1,6 +1,14 @@
-use crate::comps::temp_comps::Position;
+use crate::comps::temp_comps::{Component, Position};
 
-pub struct Player {
-    pub pos: Position,
-    pub glyph: char,
+pub struct Entity {
+    components: Vec<Component>,
+}
+
+//TODO: add component fn, remove component, search for etc.
+impl Entity {
+    pub fn new(comp_vec: Vec<Component>) -> Entity {
+        Entity {
+            components: comp_vec,
+        }
+    }
 }

@@ -1,6 +1,7 @@
 use tcod::console::Root;
 use tcod::input::*;
 
+//TODO: move entity with player component
 pub fn handle_input(terminal: &mut Root) -> bool {
     let key = terminal.wait_for_keypress(true);
     match key.code {
