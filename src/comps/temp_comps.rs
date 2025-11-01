@@ -5,5 +5,5 @@ pub struct Position {
 }
 
 pub struct Component {
-    //TODO: define component
+    pub name: String, //TODO: define component
 }

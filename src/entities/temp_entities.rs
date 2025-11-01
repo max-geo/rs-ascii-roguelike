@@ -1,13 +1,15 @@
-use crate::comps::temp_comps::{Component, Position};
+use crate::comps::temp_comps::Component;
 
 pub struct Entity {
-    components: Vec<Component>,
+    pub id: i32,
+    pub components: Vec<Component>,
 }
 
 //TODO: add component fn, remove component, search for etc.
 impl Entity {
-    pub fn new(comp_vec: Vec<Component>) -> Entity {
+    pub fn new(id_nr: i32, comp_vec: Vec<Component>) -> Entity {
         Entity {
+            id: id_nr,
             components: comp_vec,
         }
     }
