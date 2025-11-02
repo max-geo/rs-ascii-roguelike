@@ -3,7 +3,7 @@ mod entities;
 mod systems;
 mod world;
 
-use comps::temp_comps::Component;
+use comps::temp_comps::{Component, ComponentStorage, Position};
 use entities::temp_entities::Entity;
 use systems::{input, renderer};
 use tcod::console::{FontLayout, Root};
@@ -22,16 +22,18 @@ fn main() {
         .init();
 
     //NOTE:fuck you, compiler
-    let mut player = Entity {
-        components: Vec::<Component>::new(),
-        id: 22,
-    };
+    let player = Entity { id: 22 };
 
-    let mut wrld = World::new();
-    wrld.add_entity(player);
-    println!("{}", wrld.entities[0].id);
+    let mut w = World::new();
+    w.add_entity(player);
+    //FIX:
+    //FIX: COMMENT EVERYTHING THOROUGLY !!!!!!!!!!
+    //FIX:
+    w.register_component::<Position>();
+    w.add_component(player, Position { x: 13, y: 2 });
+
     loop {
-        renderer::show_screen(&mut term);
+        renderer::show_screen(&mut term, &mut w, player);
         if input::handle_input(&mut term) {
             break; //  handle_input returns true on 'escape', false otherwise
         }
