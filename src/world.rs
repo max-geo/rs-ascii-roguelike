@@ -3,10 +3,13 @@ use crate::entities::temp_entities::Entity;
 
 use std::any::{Any, TypeId};
 use std::collections::HashMap;
-use std::vec;
 
 pub struct World {
     pub entities: Vec<Entity>,
+    //NOTE: dyn - trait object (dyn Any = object of trait Any)
+    //Box moves the actual value to the heap and returns a pointer to the value.
+    //this way, the value of dyn Any can actually be stored.
+    //this is needed as the size of dyn Any is unknown at compile time.
     storages: HashMap<TypeId, Box<dyn Any>>,
 }
 
@@ -32,16 +35,15 @@ impl World {
         let type_id = TypeId::of::<T>();
         let storage = self
             .storages
-            .get_mut(&type_id)
-            .expect("Component type not registered")
+            .get_mut(&type_id) //NOTE: just get() but returns a mutable reference, but as an Option
+            .expect("Component type not registered") //NOTE: expect gets the value inside Option
             .downcast_mut::<ComponentStorage<T>>()
-            .unwrap();
-        storage.insert(e, c)
+            .unwrap(); //NOTE: same as expect but without message
+        storage.add(e, c)
     }
     pub fn get_component<T: Component>(&self, e: Entity) -> Option<&T> {
         self.storages
-            .get(&TypeId::of::<T>())?
-            // .expect("")
+            .get(&TypeId::of::<T>())? //NOTE: ? handles None value for the option
             .downcast_ref::<ComponentStorage<T>>()?
             .get(e)
     }
