@@ -1,4 +1,0 @@
-- look through gpt history, borrowing errors and lifetime changes, make sure you understand everything and comment it out (also debug, eq etc.)
-- implement render9ing for all renderable characters
-- handle input movment
--clean up code, comment all

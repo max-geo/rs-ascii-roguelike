@@ -31,21 +31,45 @@ impl World {
             .insert(type_id, Box::new(ComponentStorage::<T>::new()));
     }
 
+    // add component to entity
     pub fn add_component<T: Component>(&mut self, e: Entity, c: T) {
         let type_id = TypeId::of::<T>();
-        let storage = self
+        let comp_storage = self
             .storages
             .get_mut(&type_id) //NOTE: just get() but returns a mutable reference, but as an Option
             .expect("Component type not registered") //NOTE: expect gets the value inside Option
             .downcast_mut::<ComponentStorage<T>>()
             .unwrap(); //NOTE: same as expect but without message
-        storage.add(e, c)
+        comp_storage.add(e, c)
     }
+
+    // get component T for entity
     pub fn get_component<T: Component>(&self, e: Entity) -> Option<&T> {
         self.storages
             .get(&TypeId::of::<T>())? //NOTE: ? handles None value for the option
             .downcast_ref::<ComponentStorage<T>>()?
-            .get(e)
+            .get_component(e)
     }
-    pub fn set_component<T: Component>(entity: Entity, component: T) {}
+
+    pub fn get_entities<T: Component>(&self) -> Vec<Entity> {
+        let type_id = TypeId::of::<T>();
+        let comp_storage = self
+            .storages
+            .get(&type_id)
+            .unwrap()
+            .downcast_ref::<ComponentStorage<T>>()
+            .unwrap();
+        comp_storage.get_entities()
+    }
+    //TODO: IMPLEMENT!!!!!!!!!
+    pub fn set_component<T: Component>(&mut self, entity: Entity, c: T) {
+        let type_id = TypeId::of::<T>();
+        let comp_storage = self
+            .storages
+            .get_mut(&type_id)
+            .unwrap()
+            .downcast_mut::<ComponentStorage<T>>()
+            .unwrap();
+        comp_storage.set_component(entity, c)
+    }
 }
