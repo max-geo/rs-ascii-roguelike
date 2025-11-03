@@ -43,8 +43,8 @@ impl<T: Component> ComponentStorage<T> {
         self.data.insert(e, c);
     }
 
-    pub fn get_component(&self, e: Entity) -> Option<&T> {
-        self.data.get(&e) //NOTE: get takes a reference here because it does not need ownership of the key
+    pub fn get_component(&self, e: Entity) -> &T {
+        self.data.get(&e).unwrap() //NOTE: get takes a reference here because it does not need ownership of the key
     }
 
     pub fn get_entities(&self) -> Vec<Entity> {

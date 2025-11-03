@@ -44,10 +44,13 @@ impl World {
     }
 
     // get component T for entity
-    pub fn get_component<T: Component>(&self, e: Entity) -> Option<&T> {
+    pub fn get_component<T: Component>(&self, e: Entity) -> &T {
+        let type_id = TypeId::of::<T>();
         self.storages
-            .get(&TypeId::of::<T>())? //NOTE: ? handles None value for the option
-            .downcast_ref::<ComponentStorage<T>>()?
+            .get(&type_id) //NOTE: ? handles None value for the option
+            .unwrap()
+            .downcast_ref::<ComponentStorage<T>>()
+            .unwrap()
             .get_component(e)
     }
 

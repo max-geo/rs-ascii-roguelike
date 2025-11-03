@@ -10,9 +10,9 @@ pub fn show_screen(terminal: &mut Root, w: &World) {
     let renderables = w.get_entities::<Renderable>();
     for r in renderables {
         terminal.put_char(
-            w.get_component::<Position>(r).unwrap().x,
-            w.get_component::<Position>(r).unwrap().y,
-            w.get_component::<Renderable>(r).unwrap().glyph,
+            w.get_component::<Position>(r).x,
+            w.get_component::<Position>(r).y,
+            w.get_component::<Renderable>(r).glyph,
             tcod::BackgroundFlag::None,
         );
     }

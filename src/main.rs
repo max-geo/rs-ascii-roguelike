@@ -37,11 +37,10 @@ fn main() {
     let creatura = Entity { id: 21 };
     w.add_entity(creatura);
     w.add_component(creatura, Position { x: 18, y: 2 });
-    w.add_component(creatura, Player {});
     w.add_component(creatura, Renderable { glyph: 'B' });
     loop {
         renderer::show_screen(&mut term, &w);
-        if input::handle_input(&mut term, &w) {
+        if input::handle_input(&mut term, &mut w) {
             break; //  handle_input returns true on 'escape', false otherwise
         };
     }
