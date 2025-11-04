@@ -1,6 +1,7 @@
 mod comps;
 mod entities;
 mod systems;
+mod utils;
 mod world;
 
 use comps::temp_comps::{Hitbox, Player, Position, Renderable};
