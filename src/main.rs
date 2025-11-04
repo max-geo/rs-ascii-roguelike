@@ -3,7 +3,7 @@ mod entities;
 mod systems;
 mod world;
 
-use comps::temp_comps::{Player, Position, Renderable};
+use comps::temp_comps::{Hitbox, Player, Position, Renderable};
 use entities::temp_entities::Entity;
 use systems::{input, renderer};
 use tcod::console::{FontLayout, Root};
@@ -27,17 +27,21 @@ fn main() {
     w.register_component::<Position>();
     w.register_component::<Renderable>();
     w.register_component::<Player>();
+    w.register_component::<Hitbox>();
 
     let player = Entity { id: 22 };
     w.add_entity(player);
     w.add_component(player, Position { x: 13, y: 2 });
     w.add_component(player, Player {});
     w.add_component(player, Renderable { glyph: '@' });
+    w.add_component(player, Hitbox {});
 
     let creatura = Entity { id: 21 };
     w.add_entity(creatura);
     w.add_component(creatura, Position { x: 18, y: 2 });
     w.add_component(creatura, Renderable { glyph: 'B' });
+    w.add_component(creatura, Hitbox {});
+
     loop {
         renderer::show_screen(&mut term, &w);
         if input::handle_input(&mut term, &mut w) {

@@ -64,7 +64,6 @@ impl World {
             .unwrap();
         comp_storage.get_entities()
     }
-    //TODO: IMPLEMENT!!!!!!!!!
     pub fn set_component<T: Component>(&mut self, entity: Entity, c: T) {
         let type_id = TypeId::of::<T>();
         let comp_storage = self

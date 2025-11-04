@@ -5,28 +5,22 @@ pub struct Position {
     pub x: i32,
     pub y: i32,
 }
-impl Position {
-    pub fn set_value(&mut self, x: i32, y: i32) {
-        self.x = x;
-        self.y = y;
-    }
-}
-
-pub struct Player {}
+impl Component for Position {}
 
 pub struct Renderable {
     pub glyph: char,
 }
-
-impl Component for Position {}
-impl Component for Player {}
 impl Component for Renderable {}
+
+pub struct Player {}
+impl Component for Player {}
+
+pub struct Hitbox {}
+impl Component for Hitbox {}
 
 //NOTE: this has to be static for reasons not completely clear to me
 //NOTE: It makes it so it has the longest type of lifetime
-pub trait Component: 'static {
-    fn set_value(&self) {}
-}
+pub trait Component: 'static {}
 
 pub struct ComponentStorage<T: Component> {
     pub data: HashMap<Entity, T>,
