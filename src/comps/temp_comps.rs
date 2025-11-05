@@ -1,22 +1,26 @@
 use crate::Entity;
 use std::collections::HashMap;
 
-pub struct Position {
-    pub x: i32,
-    pub y: i32,
+//PERF: MY BELOVED MACRO
+macro_rules! create_comp {
+    ($comp_name:ident {$($field_name:ident: $field_val:ty),*}) => {
+        impl Component for $comp_name {}
+        pub struct $comp_name {
+            $(pub $field_name: $field_val),*
+        }
+    };
+    ($comp_name: ident) => {
+        impl Component for $comp_name {}
+        pub struct $comp_name {}
+    };
 }
-impl Component for Position {}
 
-pub struct Renderable {
-    pub glyph: char,
-}
-impl Component for Renderable {}
-
-pub struct Player {}
-impl Component for Player {}
-
-pub struct Hitbox {}
-impl Component for Hitbox {}
+create_comp!(Hitbox);
+create_comp!(Player);
+create_comp!(Position { x: i32, y: i32 });
+create_comp!(Renderable { glyph: char });
+create_comp!(Hp { val: i32 });
+create_comp!(Damage { val: i32 });
 
 //NOTE: this has to be static for reasons not completely clear to me
 //NOTE: It makes it so it has the longest type of lifetime

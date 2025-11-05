@@ -10,6 +10,8 @@ use systems::{input, renderer};
 use tcod::console::{FontLayout, Root};
 use world::World;
 
+use std::fs::File;
+
 fn main() {
     const WIDTH: i32 = 80;
     const HEIGHT: i32 = 30;
@@ -20,7 +22,6 @@ fn main() {
         .font("assets/terminal16x16.png", FontLayout::AsciiInRow)
         .init();
 
-    //NOTE:fuck you, compiler
     //TODO: implementat furia bardiana
 
     let mut w = World::new();
@@ -29,6 +30,8 @@ fn main() {
     w.register_component::<Renderable>();
     w.register_component::<Player>();
     w.register_component::<Hitbox>();
+
+    let entity_template = File::open("entity_template.json");
 
     let player = Entity { id: 22 };
     w.add_entity(player);
