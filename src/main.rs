@@ -11,8 +11,6 @@ use tcod::console::{FontLayout, Root};
 use world::register_comps;
 use world::*;
 
-use std::fs::File;
-
 fn main() {
     const WIDTH: i32 = 80;
     const HEIGHT: i32 = 30;
@@ -29,20 +27,27 @@ fn main() {
 
     register_comps!(w, Position, Renderable, Player, Hp, Damage, Hitbox);
 
-    let entity_template = File::open("entity_template.json");
-
     let player = Entity { id: 22 };
     w.add_entity(player);
-    w.add_component(player, Position { x: 13, y: 2 });
-    w.add_component(player, Player {});
-    w.add_component(player, Renderable { glyph: '@' });
-    w.add_component(player, Hitbox {});
+
+    add_comps!(
+        w,
+        player,
+        Position { x: 13, y: 2 },
+        Player {},
+        Renderable { glyph: '@' },
+        Hitbox {}
+    );
 
     let creatura = Entity { id: 21 };
     w.add_entity(creatura);
-    w.add_component(creatura, Position { x: 18, y: 2 });
-    w.add_component(creatura, Renderable { glyph: 'B' });
-    w.add_component(creatura, Hitbox {});
+    add_comps!(
+        w,
+        creatura,
+        Position { x: 15, y: 3 },
+        Renderable { glyph: 'B' },
+        Hitbox {}
+    );
 
     loop {
         renderer::show_screen(&mut term, &w);

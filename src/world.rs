@@ -31,7 +31,6 @@ impl World {
             .insert(type_id, Box::new(ComponentStorage::<T>::new()));
     }
 
-    // add component to entity
     pub fn add_component<T: Component>(&mut self, e: Entity, c: T) {
         let type_id = TypeId::of::<T>();
         let comp_storage = self
@@ -43,7 +42,6 @@ impl World {
         comp_storage.add(e, c)
     }
 
-    // get component T for entity
     pub fn get_component<T: Component>(&self, e: Entity) -> &T {
         let type_id = TypeId::of::<T>();
         self.storages
@@ -82,3 +80,22 @@ macro_rules! register_comps {
     };
 }
 pub(crate) use register_comps;
+
+macro_rules! add_comps {
+    (
+        $w:expr,
+        $entity:expr,
+        $( $comp_name:ident { $( $field_name:ident : $field_val:expr ),* $(,)? } ),* $(,)?
+    ) => {{
+        $(
+            $w.add_component(
+                $entity,
+                $comp_name {
+                    $( $field_name: $field_val ),*
+                }
+            );
+        )*
+    }};
+}
+
+pub(crate) use add_comps;
