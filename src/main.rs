@@ -4,11 +4,12 @@ mod systems;
 mod utils;
 mod world;
 
-use comps::temp_comps::{Hitbox, Player, Position, Renderable};
+use comps::temp_comps::*;
 use entities::temp_entities::Entity;
 use systems::{input, renderer};
 use tcod::console::{FontLayout, Root};
-use world::World;
+use world::register_comps;
+use world::*;
 
 use std::fs::File;
 
@@ -26,10 +27,7 @@ fn main() {
 
     let mut w = World::new();
 
-    w.register_component::<Position>();
-    w.register_component::<Renderable>();
-    w.register_component::<Player>();
-    w.register_component::<Hitbox>();
+    register_comps!(w, Position, Renderable, Player, Hp, Damage, Hitbox);
 
     let entity_template = File::open("entity_template.json");
 

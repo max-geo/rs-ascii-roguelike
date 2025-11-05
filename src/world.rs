@@ -75,3 +75,10 @@ impl World {
         comp_storage.set_component(entity, c)
     }
 }
+
+macro_rules! register_comps {
+    ($w:expr, $ ($comp_name:ty),*) => {
+       $($w.register_component::<$comp_name>();)*;
+    };
+}
+pub(crate) use register_comps;
