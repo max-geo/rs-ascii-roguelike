@@ -6,10 +6,14 @@ mod world;
 
 use comps::temp_comps::*;
 use entities::temp_entities::Entity;
+use systems::factories::*;
 use systems::{input, renderer};
 use tcod::console::{FontLayout, Root};
 use world::register_comps;
 use world::*;
+
+// use serde_json;
+// use std::fs::File;
 
 fn main() {
     const WIDTH: i32 = 80;
@@ -27,27 +31,11 @@ fn main() {
 
     register_comps!(w, Position, Renderable, Player, Hp, Damage, Hitbox);
 
-    let player = Entity { id: 22 };
-    w.add_entity(player);
+    let templates = read_templates();
+    spawn(&mut w, &templates, "player", 3, 3);
+    spawn(&mut w, &templates, "bee", 4, 4);
 
-    add_comps!(
-        w,
-        player,
-        Position { x: 13, y: 2 },
-        Player {},
-        Renderable { glyph: '@' },
-        Hitbox {}
-    );
-
-    let creatura = Entity { id: 21 };
-    w.add_entity(creatura);
-    add_comps!(
-        w,
-        creatura,
-        Position { x: 15, y: 3 },
-        Renderable { glyph: 'B' },
-        Hitbox {}
-    );
+    print!("{:?}", w.entities);
 
     loop {
         renderer::show_screen(&mut term, &w);

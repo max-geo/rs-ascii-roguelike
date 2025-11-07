@@ -75,14 +75,15 @@ pub fn handle_input(terminal: &mut Root, w: &mut World) -> bool {
         _ => (0, 0),
     };
 
-    let _if_coll = check_collision_at(w, player, dx, dy);
-
-    w.set_component::<Position>(
-        player,
-        Position {
-            x: player_x + dx,
-            y: player_y + dy,
-        },
-    );
-    false
+    let collides = check_collision_at(w, player, dx, dy);
+    if !collides {
+        w.set_component::<Position>(
+            player,
+            Position {
+                x: player_x + dx,
+                y: player_y + dy,
+            },
+        );
+    }
+    false // continue as normally
 }

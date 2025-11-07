@@ -1,0 +1,12 @@
+player:
+  Position:
+  Renderable:
+    glyph: "@"
+  Hp:
+    val: 100
+  Player:
+bee:
+  Position:
+  Renderable:
+    glyph: "B"
+  Hitbox:

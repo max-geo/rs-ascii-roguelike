@@ -4,8 +4,10 @@ use crate::entities::temp_entities::Entity;
 use std::any::{Any, TypeId};
 use std::collections::HashMap;
 
+#[derive(Debug)]
 pub struct World {
     pub entities: Vec<Entity>,
+    entity_count: i32,
     //NOTE: dyn - trait object (dyn Any = object of trait Any)
     //Box moves the actual value to the heap and returns a pointer to the value.
     //this way, the value of dyn Any can actually be stored.
@@ -17,12 +19,19 @@ impl World {
     pub fn new() -> Self {
         Self {
             entities: Vec::<Entity>::new(),
+            entity_count: 0,
             storages: HashMap::new(),
         }
     }
 
-    pub fn add_entity(&mut self, entity: Entity) {
+    pub fn add_entity(&mut self) -> Entity {
+        let entity = Entity {
+            id: self.entity_count,
+        };
         self.entities.push(entity);
+        self.entity_count += 1;
+
+        entity
     }
 
     pub fn register_component<T: Component>(&mut self) {
