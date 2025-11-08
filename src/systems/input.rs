@@ -1,3 +1,4 @@
+use crate::systems::attack::attack;
 use crate::utils::*;
 use crate::world::*;
 use crate::{Entity, Hitbox, Player, Position};
@@ -5,13 +6,12 @@ use crate::{Entity, Hitbox, Player, Position};
 use tcod::console::Root;
 use tcod::input::*;
 
-use std::eprintln;
-
 pub fn check_collision_area(w: &World, entity: Entity) -> bool {
     let x = w.get_component::<Position>(entity).x;
     let y = w.get_component::<Position>(entity).y;
 
     let others = w.get_entities::<Hitbox>();
+
     for other in others {
         let other_x = w.get_component::<Position>(other).x;
         let other_y = w.get_component::<Position>(other).y;
@@ -23,13 +23,12 @@ pub fn check_collision_area(w: &World, entity: Entity) -> bool {
                 }
 
                 if other_x == x + dx && other_y == y + dy {
-                    eprintln!("!!");
                     return true;
                 }
             }
         }
     }
-    eprintln!("nah");
+
     false
 }
 
@@ -44,11 +43,10 @@ pub fn check_collision_at(w: &World, entity: Entity, dx: i32, dy: i32) -> bool {
         let other_y = w.get_component::<Position>(other).y;
 
         if other_x == x + dx && other_y == y + dy {
-            eprintln!("!!");
             return true;
         }
     }
-    eprintln!("nah");
+
     false
 }
 
@@ -76,6 +74,7 @@ pub fn handle_input(terminal: &mut Root, w: &mut World) -> bool {
     };
 
     let collides = check_collision_at(w, player, dx, dy);
+
     if !collides {
         w.set_component::<Position>(
             player,
@@ -84,6 +83,13 @@ pub fn handle_input(terminal: &mut Root, w: &mut World) -> bool {
                 y: player_y + dy,
             },
         );
+    } else {
+        if let Some(colliding_entity) = w.get_entity_at(player_x + dx, player_y + dy) {
+            attack(w, player, colliding_entity);
+        } else {
+            println!("No entity found at ({}, {})", player_x + dx, player_y + dy);
+        }
     }
+
     false // continue as normally
 }

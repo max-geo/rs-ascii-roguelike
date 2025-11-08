@@ -1,4 +1,5 @@
 use crate::Entity;
+use std::any::Any;
 use std::collections::HashMap;
 
 //PERF: MY BELOVED MACRO
@@ -22,8 +23,8 @@ create_comps!(
     Player {}
 );
 
-//NOTE: this has to be static for reasons not completely clear to me
-//NOTE: It makes it so it has the longest type of lifetime
+// this has to be static for reasons not completely clear to me
+// It makes it so it has the longest type of lifetime
 pub trait Component: 'static {}
 
 pub struct ComponentStorage<T: Component> {
@@ -44,6 +45,14 @@ impl<T: Component> ComponentStorage<T> {
     pub fn get_component(&self, e: Entity) -> &T {
         self.data.get(&e).unwrap() //NOTE: get takes a reference here because it does not need ownership of the key
     }
+    //
+    // pub fn remove_entity(&mut self, e: Entity) {
+    //     self.data.remove(&e);
+    // }
+
+    pub fn has_entity(&self, e: Entity) -> bool {
+        self.data.contains_key(&e)
+    }
 
     pub fn get_entities(&self) -> Vec<Entity> {
         self.data.keys().cloned().collect()
@@ -51,5 +60,32 @@ impl<T: Component> ComponentStorage<T> {
 
     pub fn set_component(&mut self, e: Entity, c: T) {
         self.data.insert(e, c);
+    }
+}
+
+//this is needed since the dyn any approach is limiting
+//i cant remove all components of one entity since i have
+//to downcast everytime but the type is unknown
+pub trait ComponentStorageOps {
+    fn remove_entity(&mut self, e: Entity);
+}
+
+impl<T: Component> ComponentStorageOps for ComponentStorage<T> {
+    fn remove_entity(&mut self, e: Entity) {
+        self.data.remove(&e);
+    }
+}
+
+pub trait AnyComponentStorage: Any + ComponentStorageOps {
+    fn as_any(&self) -> &dyn Any;
+    fn as_any_mut(&mut self) -> &mut dyn Any;
+}
+impl<T: Component> AnyComponentStorage for ComponentStorage<T> {
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
+
+    fn as_any_mut(&mut self) -> &mut dyn Any {
+        self
     }
 }

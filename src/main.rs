@@ -6,14 +6,9 @@ mod world;
 
 use comps::temp_comps::*;
 use entities::temp_entities::Entity;
-use systems::factories::*;
-use systems::{input, renderer};
+use systems::{factories, input, renderer};
 use tcod::console::{FontLayout, Root};
-use world::register_comps;
 use world::*;
-
-// use serde_json;
-// use std::fs::File;
 
 fn main() {
     const WIDTH: i32 = 80;
@@ -31,11 +26,9 @@ fn main() {
 
     register_comps!(w, Position, Renderable, Player, Hp, Damage, Hitbox);
 
-    let templates = read_templates();
-    spawn(&mut w, &templates, "player", 3, 3);
-    spawn(&mut w, &templates, "bee", 4, 4);
-
-    print!("{:?}", w.entities);
+    let templates = factories::read_templates();
+    factories::spawn(&mut w, &templates, "player", 3, 3);
+    factories::spawn(&mut w, &templates, "bee", 4, 4);
 
     loop {
         renderer::show_screen(&mut term, &w);

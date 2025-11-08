@@ -4,9 +4,16 @@ player:
     glyph: "@"
   Hp:
     val: 100
+  Damage:
+    val: 20
   Player:
+  Hitbox:
 bee:
   Position:
   Renderable:
     glyph: "B"
   Hitbox:
+  Hp:
+    val: 100
+  Damage:
+    val: 20
