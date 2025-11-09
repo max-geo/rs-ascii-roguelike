@@ -1,4 +1,4 @@
-use crate::systems::attack::attack;
+use crate::systems::{attack::attack, pickup::pickup};
 use crate::utils::*;
 use crate::world::*;
 use crate::{Entity, Hitbox, Player, Position};
@@ -49,6 +49,12 @@ pub fn check_collision_at(w: &World, entity: Entity, dx: i32, dy: i32) -> bool {
 
     false
 }
+enum Actions {
+    Move(i32, i32),
+    Pickup,
+    Misinput,
+    Quit,
+}
 
 pub fn handle_input(terminal: &mut Root, w: &mut World) -> bool {
     let key = terminal.wait_for_keypress(true);
@@ -57,39 +63,49 @@ pub fn handle_input(terminal: &mut Root, w: &mut World) -> bool {
     let player_x = w.get_component::<Position>(player).x;
     let player_y = w.get_component::<Position>(player).y;
 
-    let (dx, dy) = match key.code {
-        KeyCode::NumPad1 => (-1, 1),
-        KeyCode::NumPad2 => (0, 1),
-        KeyCode::NumPad3 => (1, 1),
-        KeyCode::NumPad4 => (-1, 0),
-        KeyCode::NumPad5 => (0, 0),
-        KeyCode::NumPad6 => (1, 0),
-        KeyCode::NumPad7 => (-1, -1),
-        KeyCode::NumPad8 => (0, -1),
-        KeyCode::NumPad9 => (1, -1),
+    let action = match key.code {
+        KeyCode::NumPad1 => Actions::Move(-1, 1),
+        KeyCode::NumPad2 => Actions::Move(0, 1),
+        KeyCode::NumPad3 => Actions::Move(1, 1),
+        KeyCode::NumPad4 => Actions::Move(-1, 0),
+        KeyCode::NumPad5 => Actions::Move(0, 0),
+        KeyCode::NumPad6 => Actions::Move(1, 0),
+        KeyCode::NumPad7 => Actions::Move(-1, -1),
+        KeyCode::NumPad8 => Actions::Move(0, -1),
+        KeyCode::NumPad9 => Actions::Move(1, -1),
 
-        KeyCode::Escape => return true,
+        KeyCode::Escape => Actions::Quit,
 
-        _ => (0, 0),
+        _ => match key.printable {
+            'g' => Actions::Pickup,
+
+            _ => Actions::Misinput,
+        },
     };
 
-    let collides = check_collision_at(w, player, dx, dy);
+    match action {
+        Actions::Move(dx, dy) => {
+            let collides = check_collision_at(w, player, dx, dy);
 
-    if !collides {
-        w.set_component::<Position>(
-            player,
-            Position {
-                x: player_x + dx,
-                y: player_y + dy,
-            },
-        );
-    } else {
-        if let Some(colliding_entity) = w.get_entity_at(player_x + dx, player_y + dy) {
-            attack(w, player, colliding_entity);
-        } else {
-            println!("No entity found at ({}, {})", player_x + dx, player_y + dy);
+            if !collides {
+                w.set_component::<Position>(
+                    player,
+                    Position {
+                        x: player_x + dx,
+                        y: player_y + dy,
+                    },
+                );
+            } else if let Some(colliding_entity) = w.get_entity_at(player_x + dx, player_y + dy) {
+                attack(w, player, colliding_entity);
+            }
+
+            false
         }
-    }
 
-    false // continue as normally
+        Actions::Pickup => pickup(w, player),
+
+        Actions::Quit => true,
+
+        Actions::Misinput => false,
+    }
 }

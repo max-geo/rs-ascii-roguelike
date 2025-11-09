@@ -20,7 +20,10 @@ create_comps!(
     Hp { val: i32 },
     Damage { val: i32 },
     Hitbox {},
-    Player {}
+    Player {},
+    ConsumableItem {},
+    Equips {items: Vec<Entity>},
+    EquippableItem {}
 );
 
 // this has to be static for reasons not completely clear to me
@@ -45,10 +48,6 @@ impl<T: Component> ComponentStorage<T> {
     pub fn get_component(&self, e: Entity) -> &T {
         self.data.get(&e).unwrap() //NOTE: get takes a reference here because it does not need ownership of the key
     }
-    //
-    // pub fn remove_entity(&mut self, e: Entity) {
-    //     self.data.remove(&e);
-    // }
 
     pub fn has_entity(&self, e: Entity) -> bool {
         self.data.contains_key(&e)
@@ -80,6 +79,7 @@ pub trait AnyComponentStorage: Any + ComponentStorageOps {
     fn as_any(&self) -> &dyn Any;
     fn as_any_mut(&mut self) -> &mut dyn Any;
 }
+
 impl<T: Component> AnyComponentStorage for ComponentStorage<T> {
     fn as_any(&self) -> &dyn Any {
         self
