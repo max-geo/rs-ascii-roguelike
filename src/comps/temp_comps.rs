@@ -22,13 +22,25 @@ create_comps!(
     Hitbox {},
     Player {},
     ConsumableItem {},
-    Equips {items: Vec<Entity>},
-    EquippableItem {}
+    EquippableItem {},
+    Hostile {}
 );
+#[derive(Debug)]
+pub struct Equips {
+    pub data: Vec<Entity>,
+}
+
+impl Component for Equips {
+    fn add_value(&mut self, entity: Entity) {
+        self.data.push(entity);
+    }
+}
 
 // this has to be static for reasons not completely clear to me
 // It makes it so it has the longest type of lifetime
-pub trait Component: 'static {}
+pub trait Component: 'static {
+    fn add_value(&mut self, entity: Entity) {}
+}
 
 pub struct ComponentStorage<T: Component> {
     pub data: HashMap<Entity, T>,
@@ -47,6 +59,10 @@ impl<T: Component> ComponentStorage<T> {
 
     pub fn get_component(&self, e: Entity) -> &T {
         self.data.get(&e).unwrap() //NOTE: get takes a reference here because it does not need ownership of the key
+    }
+
+    pub fn get_component_mut(&mut self, e: Entity) -> &mut T {
+        self.data.get_mut(&e).unwrap()
     }
 
     pub fn has_entity(&self, e: Entity) -> bool {

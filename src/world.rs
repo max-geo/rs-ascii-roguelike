@@ -74,6 +74,28 @@ impl World {
             .unwrap()
             .get_component(e)
     }
+    pub fn has_component<T: Component>(&self, e: Entity) -> bool {
+        let type_id = TypeId::of::<T>();
+        let storage = self
+            .storages
+            .get(&type_id) //NOTE: ? handles None value for the option
+            .unwrap()
+            .as_any()
+            .downcast_ref::<ComponentStorage<T>>()
+            .unwrap();
+        storage.has_entity(e)
+    }
+
+    pub fn get_component_mut<T: Component>(&mut self, e: Entity) -> &mut T {
+        let type_id = TypeId::of::<T>();
+        self.storages
+            .get_mut(&type_id) //NOTE: ? handles None value for the option
+            .unwrap()
+            .as_any_mut()
+            .downcast_mut::<ComponentStorage<T>>()
+            .unwrap()
+            .get_component_mut(e)
+    }
 
     //TODO: ADD GET ALL COMPONENTS OF ONE ENTITY
     pub fn get_components_of(&self, e: Entity) {}
@@ -92,7 +114,7 @@ impl World {
 
     pub fn get_entity_at(&self, x: i32, y: i32) -> Option<Entity> {
         let entities = self.get_entities::<Position>();
-
+        //TODO: implement function HAS NOT COMPONENT X, so you can filter player out
         for entity in entities.iter() {
             if self.get_component::<Position>(*entity).x == x
                 && self.get_component::<Position>(*entity).y == y

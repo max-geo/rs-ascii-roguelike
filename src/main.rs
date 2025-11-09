@@ -1,11 +1,13 @@
 mod comps;
 mod entities;
+mod map;
 mod systems;
 mod utils;
 mod world;
 
 use comps::temp_comps::*;
 use entities::temp_entities::Entity;
+use map::*;
 use systems::{factories, input, renderer};
 use tcod::console::{FontLayout, Root};
 use world::*;
@@ -24,11 +26,15 @@ fn main() {
 
     let mut w = World::new();
 
-    register_comps!(w, Position, Renderable, Player, Hp, Damage, Hitbox);
+    register_comps!(
+        w, Hostile, Position, Renderable, Player, Hp, Damage, Hitbox, Equips
+    );
 
-    let templates = factories::read_templates();
-    factories::spawn(&mut w, &templates, "player", 3, 3);
-    factories::spawn(&mut w, &templates, "bee", 4, 4);
+    factories::spawn(&mut w, "player", 6, 3);
+    factories::spawn(&mut w, "bee", 7, 4);
+    factories::spawn(&mut w, "ring", 5, 5);
+
+    let mut map = generate_map(&term, &mut w);
 
     loop {
         renderer::show_screen(&mut term, &w);

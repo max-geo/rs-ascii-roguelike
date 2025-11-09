@@ -14,13 +14,9 @@ pub fn read_templates() -> HashMap<String, Value> {
     data
 }
 
-pub fn spawn(
-    w: &mut World,
-    templates: &HashMap<String, Value>,
-    entity_type: &str,
-    x: i32,
-    y: i32,
-) -> Entity {
+pub fn spawn(w: &mut World, entity_type: &str, x: i32, y: i32) -> Entity {
+    let templates = read_templates();
+
     let entity = w.add_entity();
 
     let components = templates.get(entity_type).unwrap();
@@ -47,6 +43,15 @@ pub fn spawn(
             "Hitbox" => w.add_component(entity, Hitbox {}),
 
             "Player" => w.add_component(entity, Player {}),
+
+            "Equips" => w.add_component(
+                entity,
+                Equips {
+                    data: Vec::<Entity>::new(),
+                },
+            ),
+
+            "Hostile" => w.add_component(entity, Hostile {}),
 
             _ => (),
         }

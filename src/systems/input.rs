@@ -1,9 +1,9 @@
 use crate::systems::{attack::attack, pickup::pickup};
 use crate::utils::*;
 use crate::world::*;
-use crate::{Entity, Hitbox, Player, Position};
+use crate::{Entity, Hitbox, Hostile, Player, Position};
 
-use tcod::console::Root;
+use tcod::console::{Console, Root};
 use tcod::input::*;
 
 pub fn check_collision_area(w: &World, entity: Entity) -> bool {
@@ -87,16 +87,26 @@ pub fn handle_input(terminal: &mut Root, w: &mut World) -> bool {
         Actions::Move(dx, dy) => {
             let collides = check_collision_at(w, player, dx, dy);
 
-            if !collides {
+            let dest_x = player_x + dx;
+            let dest_y = player_y + dy;
+
+            let in_x_border: bool = 0 <= dest_x && dest_x < terminal.width();
+            let in_y_border: bool = 0 <= dest_y && dest_y < terminal.height();
+
+            if !collides && in_x_border && in_y_border {
                 w.set_component::<Position>(
                     player,
                     Position {
-                        x: player_x + dx,
-                        y: player_y + dy,
+                        x: dest_x,
+                        y: dest_y,
                     },
                 );
-            } else if let Some(colliding_entity) = w.get_entity_at(player_x + dx, player_y + dy) {
-                attack(w, player, colliding_entity);
+            } else {
+                let colliding_entity = w.get_entity_at(dest_x, dest_y).unwrap();
+                let is_hostile = w.has_component::<Hostile>(colliding_entity);
+                if is_hostile {
+                    attack(w, player, colliding_entity);
+                }
             }
 
             false

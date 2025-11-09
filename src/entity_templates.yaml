@@ -8,6 +8,7 @@ player:
     val: 20
   Player:
   Hitbox:
+  Equips: 
 bee:
   Position:
   Renderable:
@@ -17,3 +18,15 @@ bee:
     val: 100
   Damage:
     val: 20
+  Hostile: 
+ring:
+  Position:
+  Renderable:
+    glyph: "'"
+  Damage:
+    val: 30
+wall:
+  Position: 
+  Renderable: 
+    glyph: "#"
+  Hitbox:
