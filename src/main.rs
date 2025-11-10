@@ -9,19 +9,19 @@ use comps::temp_comps::*;
 use entities::temp_entities::Entity;
 use map::*;
 use systems::{factories, input, renderer};
-use tcod::console::{FontLayout, Root};
+use tcod::console::{Console, FontLayout, Root};
 use world::*;
 
 fn main() {
-    const WIDTH: i32 = 80;
-    const HEIGHT: i32 = 30;
+    const WIDTH: i32 = 110;
+    const HEIGHT: i32 = 62;
 
     let mut term = Root::initializer()
         .title("the fabulous land of Paladin")
         .size(WIDTH, HEIGHT)
+        .fullscreen(true)
         .font("assets/terminal16x16.png", FontLayout::AsciiInRow)
         .init();
-
     //TODO: implementat furia bardiana
 
     let mut w = World::new();
@@ -30,12 +30,13 @@ fn main() {
         w, Hostile, Position, Renderable, Player, Hp, Damage, Hitbox, Equips
     );
 
-    factories::spawn(&mut w, "player", 6, 3);
-    factories::spawn(&mut w, "bee", 7, 4);
-    factories::spawn(&mut w, "ring", 5, 5);
+    factories::spawn(&mut w, "player", 6, 9);
+    // factories::spawn(&mut w, "bee", 7, 8);
+    // factories::spawn(&mut w, "ring", 8, 8);
 
-    let mut map = generate_map(&term, &mut w);
+    // let mut map = generate_map(&term, &mut w);
 
+    generate_map_alt(&term, &mut w);
     loop {
         renderer::show_screen(&mut term, &w);
         if input::handle_input(&mut term, &mut w) {

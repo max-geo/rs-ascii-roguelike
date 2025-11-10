@@ -59,3 +59,17 @@ pub fn spawn(w: &mut World, entity_type: &str, x: i32, y: i32) -> Entity {
 
     entity
 }
+
+pub fn spawn_decor(w: &mut World, glyph_ch: char, x_coord: i32, y_coord: i32) -> Entity {
+    let entity = w.add_entity();
+    w.add_component(entity, Renderable { glyph: glyph_ch });
+    w.add_component(
+        entity,
+        Position {
+            x: x_coord,
+            y: y_coord,
+        },
+    );
+
+    entity
+}

@@ -93,6 +93,7 @@ pub fn handle_input(terminal: &mut Root, w: &mut World) -> bool {
             let in_x_border: bool = 0 <= dest_x && dest_x < terminal.width();
             let in_y_border: bool = 0 <= dest_y && dest_y < terminal.height();
 
+            print!("{}", terminal.height());
             if !collides && in_x_border && in_y_border {
                 w.set_component::<Position>(
                     player,
