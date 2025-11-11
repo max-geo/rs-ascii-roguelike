@@ -8,7 +8,11 @@ pub fn show_screen(terminal: &mut Root, w: &World) {
     terminal.set_default_background(BLACK);
     terminal.clear();
 
-    let renderables = w.get_entities::<Renderable>();
+    let renderables: Vec<Entity> = w
+        .get_entities::<Renderable>()
+        .into_iter()
+        .filter(|e| w.has_component::<Position>(*e))
+        .collect();
 
     let mut player: Option<Entity> = None;
 

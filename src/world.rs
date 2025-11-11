@@ -1,9 +1,9 @@
 use crate::comps::temp_comps::{
-    AnyComponentStorage, Component, ComponentStorage, ComponentStorageOps, Position,
+    AnyComponentStorage, Component, ComponentStorage, Player, Position,
 };
 use crate::entities::temp_entities::Entity;
 
-use std::any::{Any, TypeId};
+use std::any::TypeId;
 use std::collections::HashMap;
 
 pub struct World {
@@ -64,6 +64,18 @@ impl World {
         comp_storage.add(e, c)
     }
 
+    pub fn remove_component<T: Component>(&mut self, e: Entity) {
+        let type_id = TypeId::of::<T>();
+        let comp_storage = self
+            .storages
+            .get_mut(&type_id)
+            .expect("Component type not registered")
+            .as_any_mut()
+            .downcast_mut::<ComponentStorage<T>>()
+            .unwrap();
+        comp_storage.remove_component(e)
+    }
+
     pub fn get_component<T: Component>(&self, e: Entity) -> &T {
         let type_id = TypeId::of::<T>();
         self.storages
@@ -118,6 +130,7 @@ impl World {
         for entity in entities.iter() {
             if self.get_component::<Position>(*entity).x == x
                 && self.get_component::<Position>(*entity).y == y
+                && !self.has_component::<Player>(*entity)
             {
                 return Some(*entity);
             }

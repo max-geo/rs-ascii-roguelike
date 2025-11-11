@@ -27,7 +27,7 @@ pub fn generate_map(t: &Root, w: &mut World) -> Vec<Vec<char>> {
 }
 
 pub fn generate_map_alt(t: &Root, w: &mut World) {
-    let mut file = File::open("assets/test.txt").unwrap();
+    let mut file = File::open("assets/unnamed.txt").unwrap();
 
     let mut temp_str = String::new();
 

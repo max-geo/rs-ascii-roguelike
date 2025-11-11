@@ -9,12 +9,12 @@ use comps::temp_comps::*;
 use entities::temp_entities::Entity;
 use map::*;
 use systems::{factories, input, renderer};
-use tcod::console::{Console, FontLayout, Root};
+use tcod::console::{FontLayout, Root};
 use world::*;
 
 fn main() {
-    const WIDTH: i32 = 110;
-    const HEIGHT: i32 = 62;
+    const WIDTH: i32 = 160;
+    const HEIGHT: i32 = 90;
 
     let mut term = Root::initializer()
         .title("the fabulous land of Paladin")
@@ -27,12 +27,12 @@ fn main() {
     let mut w = World::new();
 
     register_comps!(
-        w, Hostile, Position, Renderable, Player, Hp, Damage, Hitbox, Equips
+        w, Hostile, Position, Renderable, Player, Hp, Damage, Hitbox, Equips, Weapon
     );
 
     factories::spawn(&mut w, "player", 6, 9);
-    // factories::spawn(&mut w, "bee", 7, 8);
-    // factories::spawn(&mut w, "ring", 8, 8);
+    factories::spawn(&mut w, "bee", 7, 8);
+    factories::spawn(&mut w, "ring", 8, 8);
 
     // let mut map = generate_map(&term, &mut w);
 

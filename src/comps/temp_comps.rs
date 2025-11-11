@@ -76,6 +76,10 @@ impl<T: Component> ComponentStorage<T> {
     pub fn set_component(&mut self, e: Entity, c: T) {
         self.data.insert(e, c);
     }
+
+    pub fn remove_component(&mut self, e: Entity) {
+        self.data.remove(&e);
+    }
 }
 
 //this is needed since the dyn any approach is limiting
