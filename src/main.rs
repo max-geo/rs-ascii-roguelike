@@ -1,5 +1,6 @@
 mod comps;
 mod entities;
+mod inventory;
 mod map;
 mod systems;
 mod utils;
@@ -7,6 +8,7 @@ mod world;
 
 use comps::temp_comps::*;
 use entities::temp_entities::Entity;
+use inventory::*;
 use map::*;
 use systems::{factories, input, renderer};
 use tcod::console::{FontLayout, Root};
@@ -37,9 +39,16 @@ fn main() {
     // let mut map = generate_map(&term, &mut w);
 
     generate_map_alt(&term, &mut w);
+
+    let screen_offset_x = 30;
+    let screen_offset_y = 0;
+
+    let mut side_screen = inventory::make_screen(&mut term, 30, 90);
+
     loop {
-        renderer::show_screen(&mut term, &w);
-        if input::handle_input(&mut term, &mut w) {
+        renderer::show_screen(&mut term, &mut side_screen, &w);
+
+        if input::handle_input(&mut term, &mut w, screen_offset_x, screen_offset_y) {
             break; //  handle_input returns true on 'escape', false otherwise
         };
     }

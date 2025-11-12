@@ -53,6 +53,11 @@ pub fn spawn(w: &mut World, entity_type: &str, x: i32, y: i32) -> Entity {
 
             "Hostile" => w.add_component(entity, Hostile {}),
 
+            "Weapon" => {
+                let damage_val = comp_data["damage"].as_i64().unwrap() as i32;
+                w.add_component(entity, Weapon { damage: damage_val });
+            }
+
             _ => (),
         }
     }

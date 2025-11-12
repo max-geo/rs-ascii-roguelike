@@ -56,7 +56,12 @@ enum Actions {
     Quit,
 }
 
-pub fn handle_input(terminal: &mut Root, w: &mut World) -> bool {
+pub fn handle_input(
+    terminal: &mut Root,
+    w: &mut World,
+    screen_offset_x: i32,
+    screen_offset_y: i32,
+) -> bool {
     let key = terminal.wait_for_keypress(true);
     let player = w.get_entities::<Player>()[0];
 
@@ -90,22 +95,24 @@ pub fn handle_input(terminal: &mut Root, w: &mut World) -> bool {
             let dest_x = player_x + dx;
             let dest_y = player_y + dy;
 
-            let in_x_border: bool = 0 <= dest_x && dest_x < terminal.width();
-            let in_y_border: bool = 0 <= dest_y && dest_y < terminal.height();
+            let in_x_border: bool = 0 <= dest_x && dest_x < terminal.width() - screen_offset_x;
+            let in_y_border: bool = 0 <= dest_y && dest_y < terminal.height() - screen_offset_y;
 
-            if !collides && in_x_border && in_y_border {
-                w.set_component::<Position>(
-                    player,
-                    Position {
-                        x: dest_x,
-                        y: dest_y,
-                    },
-                );
-            } else {
-                let colliding_entity = w.get_entity_at(dest_x, dest_y).unwrap();
-                let is_hostile = w.has_component::<Hostile>(colliding_entity);
-                if is_hostile {
-                    attack(w, player, colliding_entity);
+            if in_x_border && in_y_border {
+                if !collides {
+                    w.set_component::<Position>(
+                        player,
+                        Position {
+                            x: dest_x,
+                            y: dest_y,
+                        },
+                    );
+                } else {
+                    let colliding_entity = w.get_entity_at(dest_x, dest_y).unwrap();
+                    let is_hostile = w.has_component::<Hostile>(colliding_entity);
+                    if is_hostile {
+                        attack(w, player, colliding_entity);
+                    }
                 }
             }
 

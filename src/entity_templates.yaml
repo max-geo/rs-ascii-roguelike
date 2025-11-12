@@ -23,8 +23,8 @@ ring:
   Position:
   Renderable:
     glyph: "'"
-  Damage:
-    val: 30
+  Weapon:
+    damage: 30
 wall:
   Position: 
   Renderable: 

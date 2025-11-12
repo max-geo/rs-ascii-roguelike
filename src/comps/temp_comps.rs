@@ -23,7 +23,8 @@ create_comps!(
     Player {},
     ConsumableItem {},
     EquippableItem {},
-    Hostile {}
+    Hostile {},
+    Weapon { damage: i32 }
 );
 #[derive(Debug)]
 pub struct Equips {
