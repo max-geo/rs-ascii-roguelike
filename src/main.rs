@@ -1,15 +1,17 @@
 mod comps;
 mod entities;
-mod inventory;
 mod map;
+mod messages;
+mod sidescreen;
 mod systems;
 mod utils;
 mod world;
 
 use comps::temp_comps::*;
 use entities::temp_entities::Entity;
-use inventory::*;
 use map::*;
+use messages::*;
+use sidescreen::*;
 use systems::{factories, input, renderer};
 use tcod::console::{FontLayout, Root};
 use world::*;
@@ -26,6 +28,12 @@ fn main() {
         .init();
     //TODO: implementat furia bardiana
 
+    let mut side_screen = SideScreen::new(130, 0, 30, 90, 'c');
+
+    let mut msg_screen = SideScreen::new(0, 79, 131, 11, 'm');
+
+    let screens = vec![&side_screen, &msg_screen];
+
     let mut w = World::new();
 
     register_comps!(
@@ -40,15 +48,16 @@ fn main() {
 
     generate_map_alt(&term, &mut w);
 
-    let screen_offset_x = 30;
-    let screen_offset_y = 0;
-
-    let mut side_screen = inventory::make_screen(&mut term, 30, 90);
+    let mut messages = Messages::new();
+    messages.add_message("cringer".to_string());
+    messages.add_message("cgner".to_string());
+    messages.add_message("cgner".to_string());
+    messages.add_message("8ringer".to_string());
 
     loop {
-        renderer::show_screen(&mut term, &mut side_screen, &w);
+        renderer::render(&mut term, &w, &screens, &messages);
 
-        if input::handle_input(&mut term, &mut w, screen_offset_x, screen_offset_y) {
+        if input::handle_input(&mut term, &mut w, side_screen.width, 10) {
             break; //  handle_input returns true on 'escape', false otherwise
         };
     }

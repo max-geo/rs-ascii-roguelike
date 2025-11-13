@@ -4,6 +4,10 @@ use tcod::{
     console::{Offscreen, Root},
 };
 
+pub struct SideScreen {
+    state: String,
+}
+
 pub fn make_screen(t: &mut Root, width: i32, height: i32) -> Offscreen {
     let mut screen = Offscreen::new(width, height);
     screen.set_default_background(GREY);

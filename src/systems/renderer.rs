@@ -1,12 +1,13 @@
 use crate::Entity;
-use crate::inventory::make_screen;
+use crate::messages::*;
+use crate::sidescreen::SideScreen;
 use crate::world::*;
 use crate::{Player, Position, Renderable};
 use tcod::colors::*;
 use tcod::console::{Console, Offscreen, Root, blit};
 use tcod::image::*;
 
-pub fn show_screen(terminal: &mut Root, side_screen: &mut Offscreen, w: &World) {
+pub fn render(terminal: &mut Root, w: &World, scr: &Vec<&SideScreen>, msg: &Messages) {
     terminal.set_default_background(BLACK);
     terminal.clear();
 
@@ -50,19 +51,11 @@ pub fn show_screen(terminal: &mut Root, side_screen: &mut Offscreen, w: &World) 
     terminal.set_default_background(RED);
     terminal.rect(30, 30, 5, 5, false, tcod::BackgroundFlag::Set);
 
-    let start_x = terminal.width() - 30;
+    for s in scr.iter() {
+        s.draw_screen(terminal, w, player.unwrap());
+    }
 
-    let start_y = terminal.height() - 90;
-
-    blit(
-        side_screen,
-        (0, 0),
-        (30, 90),
-        terminal,
-        (start_x, start_y),
-        1.0,
-        1.0,
-    );
+    msg.show_messages(scr[1]);
 
     terminal.flush();
 }
